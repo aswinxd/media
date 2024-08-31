@@ -98,8 +98,8 @@ async def handle_start_command(client, message):
             InlineKeyboardButton("Support Group", url="https://codecarchive.t.me"),
         ],
         [
-            InlineKeyboardButton("Updates", url="https://codecbots.t.me").
-        ],
+            InlineKeyboardButton("Updates", url="https://codecbots.t.me")
+        ]
     ]
     await message.reply_text(instructions, reply_markup=InlineKeyboardMarkup(buttons))
 
