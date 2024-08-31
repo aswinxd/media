@@ -29,7 +29,7 @@ async def schedule_deletion(client, message):
     delete_at = datetime.utcnow() + timedelta(seconds=DELETE_DELAY)
     await messages_collection.insert_one({
         "chat_id": message.chat.id,
-        "message_id": message.message_id,
+        "message_id": message.id,  
         "delete_at": delete_at
     })
 
