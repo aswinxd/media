@@ -18,7 +18,11 @@ db = mongo_client["media_delete_bot"]
 messages_collection = db["messages"]
 DATABASE_NAME = 'mediabot'
 COLLECTION_NAME = 'users'
-DELETE_DELAY = 10  
+DELETE_DELAY = 10 
+mongo_client = MongoClient(MONGO_URI)
+#db = mongo_client[DATABASE_NAME]
+users_collection = db[COLLECTION_NAME]
+
  
 @app.on_message(filters.media & filters.group)
 async def schedule_deletion(client, message):
