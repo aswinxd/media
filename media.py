@@ -99,7 +99,7 @@ async def handle_start_command(client, message):
         ],
         [
             InlineKeyboardButton("Updates", url="https://codecbots.t.me").
-        ]
+        ],
     ]
     await message.reply_text(instructions, reply_markup=InlineKeyboardMarkup(buttons))
 
