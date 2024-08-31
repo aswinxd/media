@@ -11,7 +11,7 @@ app = Client(
 )
 
 # MongoDB setup
-mongo_client = AsyncIOMotorClient("mongodb://localhost:27017")
+mongo_client = AsyncIOMotorClient(" mongodb+srv://bot:bot@cluster0.8vepzds.mongodb.net/?retryWrites=true&w=mmajority")
 db = mongo_client["media_delete_bot"]
 messages_collection = db["messages"]
 
