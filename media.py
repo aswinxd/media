@@ -1,4 +1,6 @@
 import asyncio
+import requests
+from pymongo import MongoClient
 from pyrogram import Client, filters
 from motor.motor_asyncio import AsyncIOMotorClient
 from datetime import datetime, timedelta
