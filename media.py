@@ -20,7 +20,7 @@ messages_collection = db["messages"]
 users_collection = db["users"]
 
 
-DELETE_DELAY = 10
+DELETE_DELAY = 3000
 
 @app.on_message(filters.media & filters.group)
 async def schedule_deletion(client, message):
@@ -30,7 +30,7 @@ async def schedule_deletion(client, message):
         "message_id": message.id,  
         "delete_at": delete_at
     })
-    print(f"Scheduled deletion for message {message.id} in chat {message.chat.id} at {delete_at}")
+  #  print(f"Scheduled deletion for message {message.id} in chat {message.chat.id} at {delete_at}")
 
 async def delete_expired_messages():
     while True:
