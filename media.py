@@ -16,7 +16,8 @@ app = Client(
 mongo_client = AsyncIOMotorClient("mongodb+srv://bot:bot@cluster0.8vepzds.mongodb.net/?retryWrites=true&w=mmajority")
 db = mongo_client["media_delete_bot"]
 messages_collection = db["messages"]
-
+DATABASE_NAME = 'mediabot'
+COLLECTION_NAME = 'users'
 DELETE_DELAY = 10  
  
 @app.on_message(filters.media & filters.group)
