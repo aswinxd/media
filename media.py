@@ -19,7 +19,7 @@ messages_collection = db["messages"]
 DATABASE_NAME = 'mediabot'
 COLLECTION_NAME = 'users'
 DELETE_DELAY = 10 
-mongo_client = MongoClient(MONGO_URI)
+#mongo_client = MongoClient(MONGO_URI)
 #db = mongo_client[DATABASE_NAME]
 users_collection = db[COLLECTION_NAME]
 
