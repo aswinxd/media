@@ -1,29 +1,27 @@
 import asyncio
-import requests
-from pymongo import MongoClient
-from pyrogram import Client, filters
-from motor.motor_asyncio import AsyncIOMotorClient
 from datetime import datetime, timedelta
+from pymongo import MongoClient
+from motor.motor_asyncio import AsyncIOMotorClient
+from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+
+
 app = Client(
     "heavyloadmediadeletebot",
-    api_id="27589257",  
+    api_id="27589257",
     api_hash="0af78b04b48361bc117fa4e06d6d2292",
-    bot_token="7202657465:AAG76jhYMrrk2EL5idT9_QF58UDwc5sS1Aw"  
+    bot_token="7202657465:AAG76jhYMrrk2EL5idT9_QF58UDwc5sS1Aw"
 )
 
-# MongoDB setup
-mongo_client = AsyncIOMotorClient("mongodb+srv://bot:bot@cluster0.8vepzds.mongodb.net/?retryWrites=true&w=mmajority=1")
+
+mongo_client = AsyncIOMotorClient("mongodb+srv://bot:bot@cluster0.8vepzds.mongodb.net/?retryWrites=true&w=majority")
 db = mongo_client["media_delete_bot"]
 messages_collection = db["messages"]
-DATABASE_NAME = 'mediabot'
-COLLECTION_NAME = 'users'
-DELETE_DELAY = 10 
-#mongo_client = MongoClient(MONGO_URI)
-#db = mongo_client[DATABASE_NAME]
-users_collection = db[COLLECTION_NAME]
+users_collection = db["users"]
 
- 
+
+DELETE_DELAY = 10
+
 @app.on_message(filters.media & filters.group)
 async def schedule_deletion(client, message):
     delete_at = datetime.utcnow() + timedelta(seconds=DELETE_DELAY)
@@ -32,11 +30,10 @@ async def schedule_deletion(client, message):
         "message_id": message.id,  
         "delete_at": delete_at
     })
-
-    print(f"Scheduled deletion for message {message.message_id} in chat {message.chat.id} at {delete_at}")
+    print(f"Scheduled deletion for message {message.id} in chat {message.chat.id} at {delete_at}")
 
 async def delete_expired_messages():
-
+    while True:
         now = datetime.utcnow()
         expired_messages = await messages_collection.find({"delete_at": {"$lte": now}}).to_list(None)
         for msg in expired_messages:
@@ -46,8 +43,8 @@ async def delete_expired_messages():
                 await messages_collection.delete_one({"_id": msg["_id"]})
             except Exception as e:
                 print(f"Failed to delete message {msg['message_id']} in chat {msg['chat_id']}: {e}")
-
         await asyncio.sleep(10)
+
 app.add_handler(asyncio.ensure_future(delete_expired_messages()))
 
 privacy_responses = {
@@ -77,7 +74,7 @@ async def handle_callback_query(client, callback_query):
             [InlineKeyboardButton("Right to Process", callback_data="right_to_process")]
         ]
         await callback_query.message.edit_text(
-            "Our contact details \n Name: automedia deletor \n Telegram: @CodecArchive \n The bot has been made to protect and preserve privacy as best as possible. \n  Our privacy policy may change from time to time. If we make any material changes to our policies, we will place a prominent notice on @CodecBots.", 
+            "Our contact details \n Name: automedia deletor \n Telegram: @CodecArchive \n The bot has been made to protect and preserve privacy as best as possible. \n Our privacy policy may change from time to time. If we make any material changes to our policies, we will place a prominent notice on @CodecBots.",
             reply_markup=InlineKeyboardMarkup(buttons)
         )
     elif data in privacy_responses:
@@ -85,17 +82,16 @@ async def handle_callback_query(client, callback_query):
             [[InlineKeyboardButton("Back", callback_data="privacy_policy")]]
         )
         await callback_query.message.edit_text(privacy_responses[data], reply_markup=back_button)
-
 @app.on_message(filters.command("start") & filters.private)
 async def handle_start_command(client, message):
     user_id = message.from_user.id
-    if not users_collection.find_one({"user_id": user_id}):
-        users_collection.insert_one({"user_id": user_id})
+    if not await users_collection.find_one({"user_id": user_id}):
+        await users_collection.insert_one({"user_id": user_id})
     
-    user_count = users_collection.count_documents({})
+    user_count = await users_collection.count_documents({})
     
     instructions = (
-        "Welcome! This is **media deletor**. This bot can delete media after specific time.\n"
+        "Welcome! This is **media deletor**. This bot can delete media after a specific time.\n"
         "• If you face any issues, please contact the support chat so developers can fix your issue.\n"
         "• Use the /privacy command to view the privacy policy, and interact with your data.\n"
         f"• Number of users on bot: {user_count}\n"
@@ -109,5 +105,4 @@ async def handle_start_command(client, message):
         ]
     ]
     await message.reply_text(instructions, reply_markup=InlineKeyboardMarkup(buttons))
-
 app.run()
