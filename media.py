@@ -10,11 +10,11 @@ app = Client(
     "heavyloadmediadeletebot",
     api_id="27589257",
     api_hash="0af78b04b48361bc117fa4e06d6d2292",
-    bot_token="7202657465:AAG76jhYMrrk2EL5idT9_QF58UDwc5sS1Aw"
+    bot_token="7202657465:AAG"
 )
 
 
-mongo_client = AsyncIOMotorClient("mongodb+srv://bot:bot@cluster0.8vepzds.mongodb.net/?retryWrites=true&w=majority")
+mongo_client = AsyncIOMotorClient("mongzds.monrites=true&w=majority")
 db = mongo_client["media_delete_bot"]
 messages_collection = db["messages"]
 users_collection = db["users"]
